@@ -43,35 +43,3 @@ if uploaded_file:
     if st.button("💾 提交校准数据"):
         st.balloons()
         st.success("已成功存入私有学习库！")
-# 在代碼頂部（import之後）加入這行，用來初始化儲存空間
-    if 'history' not in st.session_state:
-        st.session_state.history = []
-
-    st.divider()
-    st.subheader("🛠️ 結果校正 (人工糾錯)")
-    st.info("如果AI識別有誤，請在下方輸入正確信息，系統將記錄並學習。")
-    
-    c1, c2 = st.columns(2)
-    with c1:
-        correct_name = st.text_input("正確零件名稱")
-        correct_no = st.text_input("正確零件號")
-    with c2:
-        correct_model = st.text_input("對應機型")
-        correct_desc = st.text_area("功能描述")
-        
-    if st.button("💾 提交校准數據"):
-        # 將輸入的數據存入一個清單
-        new_data = {
-            "零件名": correct_name,
-            "零件號": correct_no,
-            "機型": correct_model,
-            "描述": correct_desc
-        }
-        st.session_state.history.append(new_data) # 存入內存
-        st.balloons()
-        st.success("已成功存入私有學習庫！")
-
-    # --- 新增：顯示校正清單 ---
-    if st.session_state.history:
-        st.write("### 📋 本次運行已校正的數據：")
-        st.table(st.session_state.history) # 以表格形式顯示
