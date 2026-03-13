@@ -27,19 +27,33 @@ if uploaded_file:
     img = Image.open(uploaded_file)
     st.image(img, caption="待识别零件", use_container_width=True)
     
-    if st.button("🚀 开始 AI 识别"):
-        model = genai.GenerativeModel('gemini-1.5-pro')
+if st.button("🚀 开始 AI 识别"):
+        # 强制使用最新版本的模型名称
+        model_name = 'gemini-1.5-flash' 
+        model = genai.GenerativeModel(model_name)
+        
         with st.spinner('AI 专家正在分析中...'):
             prompt = "你是一位工业发动机专家。请识别图中的零件，给出：1.名称 2.可能零件号 3.功能 4.适用机型(如MTU 4000, Cummins KTA50)。"
             try:
-                # 这里是核心识别代码
+                # 显式使用 generate_content 确保兼容性
                 response = model.generate_content([prompt, img])
-                st.success("识别成功！")
-                st.markdown(response.text)
+                
+                if response.text:
+                    st.success("识别成功！")
+                    st.markdown(response.text)
+                else:
+                    st.warning("AI 返回了空结果，请尝试更换图片。")
+                    
             except Exception as e:
-                # 如果失败，这里会显示具体的报错原因
-                st.error(f"❌ AI 识别失败。具体原因：{e}")
-                st.info("提示：如果是 403 错误，通常是 API Key 失效或地区限制。")
+                # 备用方案：如果 flash 报错，尝试调用 pro 版本（防止权限不同步）
+                try:
+                    alt_model = genai.GenerativeModel('gemini-1.5-pro')
+                    response = alt_model.generate_content([prompt, img])
+                    st.success("识别成功 (使用备用模型)！")
+                    st.markdown(response.text)
+                except Exception as e2:
+                    st.error(f"❌ AI 引擎响应错误：{e2}")
+                    st.info("提示：请检查 Google AI Studio 是否启用了 Gemini 1.5 权限。")
 
     st.divider()
     st.subheader("🛠️ 结果校正 (人工纠错)")
@@ -65,5 +79,6 @@ if uploaded_file:
     if st.session_state.history:
         st.write("### 📋 本次运行已校正的数据：")
         st.table(st.session_state.history)
+
 
 
