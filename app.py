@@ -28,7 +28,7 @@ if uploaded_file:
     st.image(img, caption="待识别零件", use_container_width=True)
     
     if st.button("🚀 开始 AI 识别"):
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+        model = genai.GenerativeModel('gemini-1.5-pro')
         with st.spinner('AI 专家正在分析中...'):
             prompt = "你是一位工业发动机专家。请识别图中的零件，给出：1.名称 2.可能零件号 3.功能 4.适用机型(如MTU 4000, Cummins KTA50)。"
             try:
@@ -65,4 +65,5 @@ if uploaded_file:
     if st.session_state.history:
         st.write("### 📋 本次运行已校正的数据：")
         st.table(st.session_state.history)
+
 
