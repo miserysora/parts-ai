@@ -25,8 +25,9 @@ if uploaded_file:
                 response = model.generate_content([prompt, img])
                 st.success("识别建议如下：")
                 st.markdown(response.text)
-            except Exception as e:
-                st.error("识别出错，请检查网络")
+# 改成这部分（让它显示真实错误）：
+except Exception as e:
+    st.error(f"AI 引擎报告了一个错误：{e}")
 
     st.divider()
     st.subheader("🛠️ 结果校正 (人工纠错)")
@@ -43,3 +44,4 @@ if uploaded_file:
     if st.button("💾 提交校准数据"):
         st.balloons()
         st.success("已成功存入私有学习库！")
+
